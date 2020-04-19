@@ -1,6 +1,7 @@
 using NCVREG
 using Test
+using Random
+using Statistics
 
-@testset "NCVREG.jl" begin
-    # Write your own tests here.
-end
+include("test_std.jl")
+include("test_gaussian.jl")

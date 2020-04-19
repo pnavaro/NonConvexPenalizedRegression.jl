@@ -1,19 +1,24 @@
-# NCVREG.jl
-
-Regularization Paths for SCAD and MCP Penalized Regression Models
-
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://pnavaro.github.io/NCVREG.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://pnavaro.github.io/NCVREG.jl/dev)
 [![Build Status](https://travis-ci.com/pnavaro/NCVREG.jl.svg?branch=master)](https://travis-ci.com/pnavaro/NCVREG.jl)
 [![Codecov](https://codecov.io/gh/pnavaro/NCVREG.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/pnavaro/NCVREG.jl)
 [![Coveralls](https://coveralls.io/repos/github/pnavaro/NCVREG.jl/badge.svg?branch=master)](https://coveralls.io/github/pnavaro/NCVREG.jl?branch=master)
 
-This a partial translation in Julia of the [R package ncvreg](https://github.com/pbreheny/ncvreg).
+# NCVREG.jl
+
+Regularization Paths for SCAD and MCP Penalized Regression Models
+
+This a naive and partial translation in Julia of the [R package ncvreg](http://pbreheny.github.io/ncvreg/).
+
+Breheny P and Huang J (2011). Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection. Annals of Applied Statistics, 5: 232–253
+
+I needed to do regression with SCAD penalty and i did not find it in any Julia package. 
+It will be implemented in [MLJLinearModels.jl](https://github.com/alan-turing-institute/MLJLinearModels.jl).
 
 
 ```julia-repl
 julia> using LinearAlgebra Random
-julia> using PrecisionMatrix RCall
+julia> using NCVREG RCall
 julia> rng = MersenneTwister(1234);
 julia> n, p = 50, 5
 (50, 5)

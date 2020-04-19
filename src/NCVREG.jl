@@ -1,8 +1,10 @@
 module NCVREG
 
+using Statistics
+
 ncol( A::AbstractMatrix ) = size(A)[2]
 
-function mystd(X)
+function standardize(X)
 
     # Declarations
     n, p = size(X)
@@ -203,6 +205,7 @@ function cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, m, α, dfmax)
         end
 
         while (tot_iter < max_iter) 
+
             while (tot_iter < max_iter) 
 	        while (tot_iter < max_iter)
 
@@ -216,7 +219,7 @@ function cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, m, α, dfmax)
 
 	                if e1[j]
 
-                           z[j] = crossprod(X, r, j) / n + a[j]
+                       z[j] = crossprod(X, r, j) / n + a[j]
 
 	                   # Update β_j
 	                   l1 = λ[l] * m[j] * α
@@ -334,10 +337,10 @@ function cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, m, α, dfmax)
 
 end
 
-abstract type NCVREG end
+abstract type AbstractModel end
 
 export SCAD
-struct SCAD <: NCVREG
+struct SCAD <: AbstractModel
 
     beta :: Array{Float64, 2}
 
@@ -347,7 +350,7 @@ struct SCAD <: NCVREG
 end
 
 export MCP
-struct MCP <: NCVREG
+struct MCP <: AbstractModel
 
     beta :: Array{Float64, 2}
 
@@ -357,7 +360,7 @@ struct MCP <: NCVREG
 end
 
 export Lasso
-struct Lasso <: NCVREG
+struct Lasso <: AbstractModel
 
     beta :: Array{Float64, 2}
 
@@ -375,7 +378,7 @@ function ncvreg(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64}, pe
     penalty_factor = ones(Float64, p)
 
     ## Set up XX, yy, λ
-    XX, center, scale = mystd(X)
+    XX, center, scale = standardize(X)
     dfmax = p+1 
 
     yy  = y .- mean(y)
@@ -402,7 +405,7 @@ function ncvreg(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64}, pe
 
 end
 
-function coef( self :: NCVREG )
+function coef( self :: AbstractModel )
 
     which = 1:length(self.λ)
 
