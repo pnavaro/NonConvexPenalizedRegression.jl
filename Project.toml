@@ -1,0 +1,13 @@
+name = "NCVREG"
+uuid = "393d5197-c0a3-4293-bd2f-5829bf091ab1"
+authors = ["Pierre Navaro", "Institut de Recherche Mathématique de Rennes"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
