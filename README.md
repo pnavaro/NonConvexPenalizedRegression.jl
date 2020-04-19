@@ -8,17 +8,19 @@
 
 Regularization Paths for SCAD and MCP Penalized Regression Models
 
-This a naive and partial translation in Julia of the [R package ncvreg](http://pbreheny.github.io/ncvreg/).
+This is a quick, naive and partial translation in Julia of the [R package ncvreg](http://pbreheny.github.io/ncvreg/).  Only `gaussian` family is translated.
 
-Breheny P and Huang J (2011). Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection. Annals of Applied Statistics, 5: 232–253
+Algorithm is descrined in **Breheny P and Huang J (2011)** "Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection". *Annals of Applied Statistics*, 5: 232–253
 
-I needed to do regression with SCAD penalty and i did not find it in any Julia package. 
-It will be implemented in [MLJLinearModels.jl](https://github.com/alan-turing-institute/MLJLinearModels.jl).
+I needed to do regression with SCAD penalty and I can't find it in any Julia package. 
+Perharps it is now implemented in [MLJLinearModels.jl](https://github.com/alan-turing-institute/MLJLinearModels.jl).
 
 
 ```julia-repl
-julia> using LinearAlgebra Random
-julia> using NCVREG RCall
+julia> using LinearAlgebra 
+julia> using Random
+julia> using NCVREG 
+julia> using RCall
 julia> rng = MersenneTwister(1234);
 julia> n, p = 50, 5
 (50, 5)
@@ -100,7 +102,7 @@ julia> λ = [0.2]
 1-element Array{Float64,1}:
  0.2
 
-julia> scad = SCAD(XX, y, λ)
+julia> scad = NCVREG.coef(SCAD(XX, y, λ))
 SCAD([-0.003322960709765954; 1.0256660512338405; … ; 0.0; 0.0])
 
 julia> println( " Julia scad = $scad")

@@ -343,9 +343,10 @@ export SCAD
 struct SCAD <: AbstractModel
 
     beta :: Array{Float64, 2}
+    λ :: Vector{Float64}
 
     function SCAD(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64})
-        new( ncvreg(X, y, λ, :SCAD, 3.7 )) 
+        new( ncvreg(X, y, λ, :SCAD, 3.7 ), λ) 
     end
 end
 
@@ -353,9 +354,10 @@ export MCP
 struct MCP <: AbstractModel
 
     beta :: Array{Float64, 2}
+    λ :: Vector{Float64}
 
     function MCP(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64}) 
-        new( ncvreg(X, y, λ, :MCP, 3. ))
+        new( ncvreg(X, y, λ, :MCP, 3. ), λ)
     end
 end
 
@@ -363,9 +365,10 @@ export Lasso
 struct Lasso <: AbstractModel
 
     beta :: Array{Float64, 2}
+    λ :: Vector{Float64}
 
     function Lasso(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64} ) 
-        new( ncvreg(X, y, λ, :Lasso, 3. )) 
+        new( ncvreg(X, y, λ, :Lasso, 3. ), λ) 
     end
 end
 
@@ -409,7 +412,7 @@ function coef( self :: AbstractModel )
 
     which = 1:length(self.λ)
 
-    return beta[:, which]
+    return self.beta[:, which]
 
 end
 
