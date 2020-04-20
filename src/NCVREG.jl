@@ -403,7 +403,6 @@ function ncvreg(X, y, λ, penalty, γ )
     beta = zeros(Float64, (ncol(X)+1, p))
     beta .= transpose(collect(hcat(a, b')))
 
-
     beta
 
 end
