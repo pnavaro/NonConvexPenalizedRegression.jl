@@ -10,7 +10,7 @@ Regularization Paths for SCAD and MCP Penalized Regression Models
 
 This is a quick, naive and partial translation in Julia of the [R package ncvreg](http://pbreheny.github.io/ncvreg/).  Only `gaussian` family is translated.
 
-Algorithm is descrined in **Breheny P and Huang J (2011)** "Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection". *Annals of Applied Statistics*, 5: 232–253
+Algorithm is described in **Breheny P and Huang J (2011)** "Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection". *Annals of Applied Statistics*, 5: 232–253
 
 I needed to do regression with SCAD penalty and I can't find it in any Julia package. 
 Perharps it is now implemented in [MLJLinearModels.jl](https://github.com/alan-turing-institute/MLJLinearModels.jl).
