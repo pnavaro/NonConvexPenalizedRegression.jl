@@ -372,7 +372,7 @@ struct Lasso <: AbstractModel
     end
 end
 
-function ncvreg(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64}, penalty, γ ) 
+function ncvreg(X, y, λ, penalty, γ ) 
 
     α              = 1 
     eps            = 1e-4
