@@ -349,8 +349,12 @@ struct SCAD <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    function SCAD(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64})
+    function SCAD(X, y::Vector{Float64}, λ::Vector{Float64})
+
+        @assert length(size(X)) > 1
+
         new(ncvreg(X, y, λ, :SCAD, 3.7), λ)
+
     end
 end
 
