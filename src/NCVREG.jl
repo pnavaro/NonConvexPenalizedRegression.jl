@@ -349,13 +349,8 @@ struct SCAD <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    function SCAD(X, y::Vector{Float64}, λ::Vector{Float64})
+    SCAD(X, y, λ) = new(ncvreg(X, y, λ, :SCAD, 3.7), λ)
 
-        @assert length(size(X)) > 1
-
-        new(ncvreg(X, y, λ, :SCAD, 3.7), λ)
-
-    end
 end
 
 export MCP
@@ -364,9 +359,8 @@ struct MCP <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    function MCP(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64})
-        new(ncvreg(X, y, λ, :MCP, 3.0), λ)
-    end
+    MCP(X, y, λ) = new(ncvreg(X, y, λ, :MCP, 3.0), λ)
+
 end
 
 export Lasso
@@ -375,9 +369,8 @@ struct Lasso <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    function Lasso(X::Array{Float64,2}, y::Vector{Float64}, λ::Vector{Float64})
-        new(ncvreg(X, y, λ, :Lasso, 3.0), λ)
-    end
+    Lasso(X, y, λ) = new(ncvreg(X, y, λ, :Lasso, 3.0), λ)
+
 end
 
 function ncvreg(X, y, λ, penalty, γ)
