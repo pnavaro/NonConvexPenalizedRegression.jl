@@ -6,7 +6,7 @@
 
 Regularization Paths for SCAD and MCP Penalized Regression Models
 
-This is a quick, naive and partial Julia translation of the R package [ncvreg](http://pbreheny.github.io/ncvreg/).  Only `gaussian` family is translated.
+This is a quick, naive and partial Julia translation of the R package [ncvreg](http://pbreheny.github.io/ncvreg/).  Only `gaussian` family is translated but if you need more, just ask, i can do it if it is useful for someone.
 
 Algorithm is described in **Breheny P and Huang J (2011)** "Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection". *Annals of Applied Statistics*, 5: 232–253
 
