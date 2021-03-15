@@ -1,5 +1,5 @@
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://pnavaro.github.io/NCVREG.jl/dev)
-[![Build Status](https://github.com/pnavaro/NCVREG.jl/.github/workflows/ci.yml/badge.svg)
+![Build Status](https://github.com/pnavaro/NCVREG.jl/.github/workflows/ci.yml/badge.svg)
 [![Codecov](https://codecov.io/gh/pnavaro/NCVREG.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/pnavaro/NCVREG.jl)
 
 # NCVREG.jl
