@@ -1,6 +1,5 @@
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://pnavaro.github.io/NCVREG.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://pnavaro.github.io/NCVREG.jl/dev)
-[![Build Status](https://travis-ci.com/pnavaro/NCVREG.jl.svg?branch=master)](https://travis-ci.com/pnavaro/NCVREG.jl)
+[![Build Status](https://github.com/pnavaro/NCVREG.jl/.github/workflows/ci.yml/badge.svg)
 [![Codecov](https://codecov.io/gh/pnavaro/NCVREG.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/pnavaro/NCVREG.jl)
 
 # NCVREG.jl
