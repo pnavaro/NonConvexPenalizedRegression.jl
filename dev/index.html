@@ -1,92 +1,76 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · NonConvexPenalizedRegression.jl</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>NonConvexPenalizedRegression.jl</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>Home</a></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Home</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Home</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/master/docs/src/index.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="NonConvexPenalizedRegression.jl"><a class="docs-heading-anchor" href="#NonConvexPenalizedRegression.jl">NonConvexPenalizedRegression.jl</a><a id="NonConvexPenalizedRegression.jl-1"></a><a class="docs-heading-anchor-permalink" href="#NonConvexPenalizedRegression.jl" title="Permalink"></a></h1><p>Regularization Paths for SCAD and MCP Penalized Regression Models</p><p>This is partial translationn Julia  of the R package <a href="http://pbreheny.github.io/ncvreg/">ncvreg</a>.   Only <code>gaussian</code> family is translated.</p><p>Algorithm is described in <strong>Breheny P and Huang J (2011)</strong> &quot;Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection&quot;. <em>Annals of Applied Statistics</em>, 5: 232–253</p><p>I needed to do regression with SCAD penalty and I can&#39;t find it in any Julia package.  Perharps it is now implemented in <a href="https://github.com/alan-turing-institute/MLJLinearModels.jl">MLJLinearModels.jl</a>.</p><pre><code class="language-julia-repl hljs">julia&gt; using LinearAlgebra 
-julia&gt; using Random
-julia&gt; using NonConvexPenalizedRegression
-julia&gt; using RCall
-julia&gt; rng = MersenneTwister(1234);
-julia&gt; n, p = 50, 5
-(50, 5)
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · NonConvexPenalizedRegression.jl</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><div class="docs-package-name"><span class="docs-autofit"><a href>NonConvexPenalizedRegression.jl</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>Home</a><ul class="internal"><li class="toplevel"><a class="tocitem" href="#Index"><span>Index</span></a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Home</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Home</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/master/docs/src/index.md#L" title="Edit on GitHub"><span class="docs-icon fab"></span><span class="docs-label is-hidden-touch">Edit on GitHub</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><h1 id="NonConvexPenalizedRegression.jl"><a class="docs-heading-anchor" href="#NonConvexPenalizedRegression.jl">NonConvexPenalizedRegression.jl</a><a id="NonConvexPenalizedRegression.jl-1"></a><a class="docs-heading-anchor-permalink" href="#NonConvexPenalizedRegression.jl" title="Permalink"></a></h1><p>Regularization Paths for SCAD and MCP Penalized Regression Models</p><p>This is a translation in Julia of the R package <a href="http://pbreheny.github.io/ncvreg/">ncvreg</a>.   Only <code>gaussian</code> family is translated.</p><p>Algorithm is described in <strong>Breheny P and Huang J (2011)</strong> &quot;Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection&quot;. <em>Annals of Applied Statistics</em>, 5: 232–253</p><pre><code class="language-julia hljs">using LinearAlgebra
+using Random
+using NonConvexPenalizedRegression
+using RCall
+rng = MersenneTwister(1234);
+n, p = 50, 5
 
-julia&gt; X = randn(rng, n, p)              # feature matrix
-50×5 Array{Float64,2}:
-  0.867347   -1.22672     0.183976    0.0377058   1.48494
- -0.901744   -0.541716   -1.27635    -0.490009    1.23969
-  ⋮
- -1.00978    -1.66323    -0.744522    0.427383   -1.37986
- -0.543805   -0.521229   -0.191176   -0.492253   -0.984217
-
-julia&gt; a0 = collect(1:p)                # ground truths
-5-element Array{Int64,1}:
+X = randn(rng, n, p)              # feature matrix</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">50×5 Matrix{Float64}:
+  0.867347  -1.22672     0.183976  -1.87215    -0.205782
+ -0.901744  -0.541716   -1.27635   -0.0801396  -1.22338
+ -0.494479  -0.686494    1.03132    0.259716    0.980733
+ -0.902914  -0.712932   -0.910805  -0.744522    0.427383
+  0.864401  -0.327059    0.754603  -0.191176   -0.492253
+  2.21188    0.514836   -1.29475    0.0377058   1.48494
+  0.532813   2.41747    -0.308944  -0.490009    1.23969
+ -0.271735  -0.307974    1.30668    1.21081     1.06159
+  0.502334   1.2453      1.44886   -0.457872    0.176156
+ -0.516984  -0.0499502   0.778151  -0.170919    0.714251
+  ⋮                                            
+ -1.09122   -0.316387   -0.712114   1.33251    -0.743225
+ -0.580517   0.265743   -0.971334  -0.717513    0.801171
+ -0.315437   1.06561    -0.639229  -1.71903    -1.39614
+ -1.36145    1.38501    -0.409189  -0.345262   -1.40416
+ -0.114457   0.0799514  -2.10832   -0.934029    0.0949513
+  0.165837  -0.833369    0.432183   0.823597   -0.596271
+ -0.408438  -0.443247   -0.256065  -0.177997    0.861939
+ -1.00978   -1.66323     0.797165  -0.644069    0.127747
+ -0.543805  -0.521229    0.103145  -1.37931     0.143105</code></pre><pre><code class="language-julia hljs">a0 = collect(1:p)                # ground truths</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">5-element Vector{Int64}:
  1
  2
  3
  4
- 5
-
-julia&gt; y = X * a0 + 0.1 * randn(n) # generate response
-50-element Array{Float64,1}:
-   6.411769869798991
-  -1.59817739694925
+ 5</code></pre><pre><code class="language-julia hljs">y = X * a0 + 0.1 * randn(n) # generate response</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">50-element Vector{Float64}:
+  -9.570952388013737
+ -12.09018447252382
+   7.1446942677741365
+  -5.943514959651751
+  -0.8232709067962877
+   6.8739333885601965
+   8.877142467286037
+  13.130487414172094
+   6.370322613007125
+   4.467820852652403
    ⋮
- -11.769008550241434
-  -9.107294931708777
+  -2.2593262615425793
+  -1.9061321979086527
+ -14.07625961179517
+  -8.303866818501211
+  -9.546282411110857
+   0.07705677212327153
+   1.748608788376642
+  -4.075635480352737
+  -6.040923258443157</code></pre><pre><code class="language- hljs">XX = hcat(X, randn(rng, n, p))
 
-julia&gt; XX = hcat(X, randn(rng, n, p))
-50×10 Array{Float64,2}:
-  0.867347   -1.22672     0.183976    0.0377058  …   1.69129     0.969694    0.222167    -0.953909
-  ⋮                                              ⋱
- -0.543805   -0.521229   -0.191176   -0.492253      -2.5788     -0.329958    0.00775707  -0.370354
+@rput XX
+@rput y
 
-julia&gt; @rput XX
-50×10 Array{Float64,2}:
-  0.867347   -1.22672     0.183976    0.0377058  …   1.69129     0.969694    0.222167    -0.953909
-  ⋮                                              ⋱
- -0.543805   -0.521229   -0.191176   -0.492253      -2.5788     -0.329958    0.00775707  -0.370354
+R&quot;library(ncvreg)&quot;
 
-julia&gt; @rput y
-50-element Array{Float64,1}:
-   6.411769869798991
-  -1.59817739694925
-   ⋮
- -11.769008550241434
-  -9.107294931708777
+R&quot;scad &lt;- coef(ncvreg(XX, y, lambda=0.2, penalty=&#39;SCAD&#39;, eps=.0001))&quot;
 
-julia&gt; R&quot;library(ncvreg)&quot;
-RObject{StrSxp}
-[1] &quot;ncvreg&quot;    &quot;stats&quot;     &quot;graphics&quot;  &quot;grDevices&quot; &quot;utils&quot;     &quot;datasets&quot;
-[7] &quot;methods&quot;   &quot;base&quot;
+@rget scad</code></pre><pre><code class="language-julia hljs">λ = [0.2]
 
-julia&gt; R&quot;scad &lt;- coef(ncvreg(XX, y, lambda=0.2, penalty=&#39;SCAD&#39;, eps=.0001))&quot;
-RObject{RealSxp}
- (Intercept)           V1           V2           V3           V4           V5
--0.003322903  1.025666431  2.000108987  2.983498545  3.997543804  4.982264144
-          V6           V7           V8           V9          V10
- 0.000000000  0.000000000  0.000000000  0.000000000  0.000000000
-
-julia&gt; @rget scad
-11-element Array{Float64,1}:
- -0.0033229032078964105
-  1.0256664305062173
-  2.000108987156345
-  2.9834985454557157
-  3.997543803872521
-  4.982264143916537
-  0.0
-  0.0
-  0.0
-  0.0
-  0.0
-
-julia&gt; println( &quot; R scad = $scad&quot;)
- R scad = [-0.0033229032078964105, 1.0256664305062173, 2.000108987156345, 2.9834985454557157, 3.997543803872521, 4.982264143916537, 0.0, 0.0, 0.0, 0.0, 0.0]
-
-julia&gt; λ = [0.2]
-1-element Array{Float64,1}:
- 0.2
-
-julia&gt; scad = NonConvexPenalizedRegression.coef(SCAD(XX, y, λ))
-SCAD([-0.003322960709765954; 1.0256660512338405; … ; 0.0; 0.0])
-
-julia&gt; println( &quot; Julia scad = $scad&quot;)
- Julia scad = SCAD([-0.003322960709765954; 1.0256660512338405; 2.00010933635426; 2.983498839847109; 3.99754375703709; 4.982264100245242; 0.0; 0.0; 0.0; 0.0; 0.0])
-</code></pre><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}" href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, multiplier, α, dfmax)</code></pre><p>Coordinate descent for gaussian models</p><p>reference : https://github.com/pbreheny/ncvreg/blob/master/src/gaussian.c</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/a4c4b64f56fc0df1c0030187a1a7b6ca2f0a2ca0/src/NonConvexPenalizedRegression.jl#LL119-L125">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}" href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a> — <span class="docstring-category">Method</span></header><section><div><p>crossprod( X, y, n, j)</p><p>Cross product of y with jth column of X</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/a4c4b64f56fc0df1c0030187a1a7b6ca2f0a2ca0/src/NonConvexPenalizedRegression.jl#LL101-L105">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}" href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">gaussian_loss( r )</code></pre><p>Gaussian loss </p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/a4c4b64f56fc0df1c0030187a1a7b6ca2f0a2ca0/src/NonConvexPenalizedRegression.jl#LL47-L51">source</a></section></article><ul><li><a href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a></li><li><a href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a></li><li><a href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a></li></ul></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Wednesday 7 September 2022 13:56">Wednesday 7 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+scad = NonConvexPenalizedRegression.coef(SCAD(XX, y, λ))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">11×1 Matrix{Float64}:
+ 0.012456537255863043
+ 0.9998208526403224
+ 2.000033391711003
+ 2.9957829032232426
+ 4.017689580276198
+ 5.0152377994702855
+ 0.0
+ 0.0
+ 0.0
+ 0.0
+ 0.0</code></pre><h1 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}" href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, multiplier, α, dfmax)</code></pre><p>Coordinate descent for gaussian models</p><p>reference : https://github.com/pbreheny/ncvreg/blob/master/src/gaussian.c</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/96dde5c8481253db549d8626642628e540c21fd9/src/NonConvexPenalizedRegression.jl#LL119-L125">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}" href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a> — <span class="docstring-category">Method</span></header><section><div><p>crossprod( X, y, n, j)</p><p>Cross product of y with jth column of X</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/96dde5c8481253db549d8626642628e540c21fd9/src/NonConvexPenalizedRegression.jl#LL101-L105">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}" href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">gaussian_loss( r )</code></pre><p>Gaussian loss </p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/96dde5c8481253db549d8626642628e540c21fd9/src/NonConvexPenalizedRegression.jl#LL47-L51">source</a></section></article><ul><li><a href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a></li><li><a href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a></li><li><a href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a></li></ul></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Wednesday 7 September 2022 14:35">Wednesday 7 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
