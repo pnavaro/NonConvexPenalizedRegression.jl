@@ -8,8 +8,7 @@ makedocs(;
     ],
     repo="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/{commit}{path}#L{line}",
     sitename="NonConvexPenalizedRegression.jl",
-    authors="Pierre Navaro, Institut de Recherche Mathématique de Rennes",
-    assets=String[],
+    authors="Pierre Navaro",
 )
 
 deploydocs(;
