@@ -1,5 +1,5 @@
 using LinearAlgebra 
-using NCVREG 
+using NonConvexPenalizedRegression 
 using Random
 using RCall
 using Test
@@ -28,7 +28,7 @@ R"rscad <- coef(ncvreg(XX, y, lambda=0.2, penalty='SCAD', eps=.0001))"
 
 λ = [0.2]
 
-jscad = NCVREG.coef(SCAD(XX, y, λ))
+jscad = NonConvexPenalizedRegression.coef(SCAD(XX, y, λ))
 
 @show rscad .- jscad
 

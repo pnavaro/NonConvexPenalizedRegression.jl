@@ -1,17 +1,19 @@
-using Documenter, NCVREG
+using Documenter, NonConvexPenalizedRegression
 
 makedocs(;
-    modules=[NCVREG],
+    modules=[NonConvexPenalizedRegression],
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
     ],
-    repo="https://github.com/pnavaro/NCVREG.jl/blob/{commit}{path}#L{line}",
-    sitename="NCVREG.jl",
+    repo="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/{commit}{path}#L{line}",
+    sitename="NonConvexPenalizedRegression.jl",
     authors="Pierre Navaro, Institut de Recherche Mathématique de Rennes",
     assets=String[],
 )
 
 deploydocs(;
-    repo="github.com/pnavaro/NCVREG.jl",
+    repo="github.com/pnavaro/NonConvexPenalizedRegression.jl",
+    branch = "gh-pages",
+    devbranch = "master",
 )

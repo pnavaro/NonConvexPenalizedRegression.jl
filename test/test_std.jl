@@ -1,6 +1,6 @@
 @testset "std standardizes correctly" begin
 
-import NCVREG: standardize
+import NonConvexPenalizedRegression: standardize
 
 rng = MersenneTwister(1234)
 n = 20

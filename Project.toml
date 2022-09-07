@@ -1,4 +1,4 @@
-name = "NCVREG"
+name = "NonConvexPenalizedRegression"
 uuid = "393d5197-c0a3-4293-bd2f-5829bf091ab1"
 authors = ["Pierre Navaro", "Institut de Recherche Mathématique de Rennes"]
 version = "0.1.0"

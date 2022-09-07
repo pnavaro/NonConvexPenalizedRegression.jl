@@ -2,7 +2,7 @@
 
     using LinearAlgebra
     using Random
-    using NCVREG
+    using NonConvexPenalizedRegression
     
     Random.seed!(42)
     

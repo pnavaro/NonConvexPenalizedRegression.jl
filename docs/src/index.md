@@ -1,4 +1,4 @@
-# NCVREG.jl
+# NonConvexPenalizedRegression.jl
 
 Regularization Paths for SCAD and MCP Penalized Regression Models
 
@@ -14,7 +14,7 @@ Perharps it is now implemented in [MLJLinearModels.jl](https://github.com/alan-t
 ```julia-repl
 julia> using LinearAlgebra 
 julia> using Random
-julia> using NCVREG 
+julia> using NonConvexPenalizedRegression
 julia> using RCall
 julia> rng = MersenneTwister(1234);
 julia> n, p = 50, 5
@@ -97,7 +97,7 @@ julia> λ = [0.2]
 1-element Array{Float64,1}:
  0.2
 
-julia> scad = NCVREG.coef(SCAD(XX, y, λ))
+julia> scad = NonConvexPenalizedRegression.coef(SCAD(XX, y, λ))
 SCAD([-0.003322960709765954; 1.0256660512338405; … ; 0.0; 0.0])
 
 julia> println( " Julia scad = $scad")
@@ -106,7 +106,7 @@ julia> println( " Julia scad = $scad")
 ```
 
 ```@autodocs
-Modules = [NCVREG]
+Modules = [NonConvexPenalizedRegression]
 ```
 
 ```@index

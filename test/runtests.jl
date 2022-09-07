@@ -1,4 +1,4 @@
-using NCVREG
+using NonConvexPenalizedRegression
 using Test
 using Random
 using Statistics

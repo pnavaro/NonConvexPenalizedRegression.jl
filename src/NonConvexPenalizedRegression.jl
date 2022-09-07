@@ -1,4 +1,4 @@
-module NCVREG
+module NonConvexPenalizedRegression
 
 using Statistics
 
