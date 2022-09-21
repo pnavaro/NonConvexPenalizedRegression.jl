@@ -141,16 +141,20 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                     tot_iter += 1
                     Dev[l] = 0
                     for i in eachindex(eta)
-                        pi = p_binomial(eta[i])
-                        w[i] = fmax2(pi*(1-pi), 0.0001)
-                        s[i] = y[i] - pi
+                        p_i = p_binomial(eta[i])
+                        w[i] = fmax2(p_i*(1-p_i), 0.0001)
+                        s[i] = y[i] - p_i
                         r[i] = s[i]/w[i]
-                        if (y[i]==1) REAL(Dev)[l] = REAL(Dev)[l] - log(pi)
-                        if (y[i]==0) REAL(Dev)[l] = REAL(Dev)[l] - log(1-pi)
+                        if y[i]==1 
+                            Dev[l] = Dev[l] - log(p_i)
+                        end
+                        if y[i]==0 
+                            Dev[l] = Dev[l] - log(1-p_i)
+                        end
                     end
-                    if REAL(Dev)[l]/nullDev < .01
+                    if Dev[l]/nullDev < .01
                         if warn 
-                           @warning("Model saturated; exiting...")
+                           @warn "Model saturated; exiting..."
                         end
                         for ll =l:L-1
                             iter[ll] = missing
@@ -160,13 +164,13 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                     end
 
                     # Intercept
-                    xwr = crossprod(w, r, n, 0);
-                    xwx = sum(w, n);
-                    b0[l] = xwr/xwx + a0;
+                    xwr = crossprod(w, r, 1)
+                    xwx = sum(w)
+                    b0[l] = xwr/xwx + a0
                     for i in eachindex(r)
-                      si = b0[l] - a0;
-                      r[i] -= si;
-                      eta[i] += si;
+                      si = b0[l] - a0
+                      r[i] -= si
+                      eta[i] += si
                     end
 
                     maxChange = abs(si)*xwx/n
@@ -226,14 +230,12 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                   z[j] = crossprod(X, s, j)/n
                   l1 = lam[l] * m[j] * alpha
                   if fabs(z[j]) > l1
-                    e1[j] = e2[j] = 1;
+                    e1[j] = e2[j] = 1
                     violations +=1
                   end
                 end
               end
-              if violations==0 
-                 break
-              end
+              violations==0  && break
             end
 
             # Scan for violations in rest
