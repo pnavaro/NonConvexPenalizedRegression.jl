@@ -32,26 +32,26 @@ X = randn(rng, n, p)              # feature matrix</code></pre><pre class="docum
  3
  4
  5</code></pre><pre><code class="language-julia hljs">y = X * a0 + 0.1 * randn(n) # generate response</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">50-element Vector{Float64}:
-  -9.516758819255767
- -12.110404829251056
-   7.245565786948663
-  -5.823897617742199
-  -0.8137231138799231
-   6.767424139408281
-   8.72311153102721
-  13.285940569899806
-   6.360239502122082
-   4.7174054553282065
+  -9.576347480362095
+ -12.10124061659159
+   6.948591271350955
+  -5.932331470622046
+  -0.7560022853319335
+   7.014759780987333
+   8.643074515313703
+  13.176782953602643
+   6.51156592070337
+   4.710018782080831
    ⋮
-  -2.3929887308641913
-  -1.7984248702557621
- -14.002947757628807
-  -8.222910690559893
-  -9.636287917231407
-   0.16801452910756873
-   1.4479916002977022
-  -3.8252930921447317
-  -6.081330136728246</code></pre><pre><code class="language- hljs">XX = hcat(X, randn(rng, n, p))
+  -2.258177735919219
+  -1.95552627893764
+ -14.039212760142215
+  -8.389987597431782
+  -9.625239918415385
+   0.22923880487720852
+   1.5763562394609192
+  -3.7931219592317174
+  -6.11124691529211</code></pre><pre><code class="language- hljs">XX = hcat(X, randn(rng, n, p))
 
 @rput XX
 @rput y
@@ -63,14 +63,14 @@ R&quot;scad &lt;- coef(ncvreg(XX, y, lambda=0.2, penalty=&#39;SCAD&#39;, eps=.00
 @rget scad</code></pre><pre><code class="language-julia hljs">λ = [0.2]
 
 scad = NonConvexPenalizedRegression.coef(SCAD(XX, y, λ))</code></pre><pre class="documenter-example-output"><code class="nohighlight hljs ansi">11×1 Matrix{Float64}:
- -0.005795430402986912
-  0.980903978065172
-  2.002993337895441
-  2.9972272710013783
-  4.0099815313246046
-  4.987548181231851
+ -0.004126574786698312
+  1.0144601062646843
+  1.9987456779031394
+  3.0075076635560554
+  4.004377350858286
+  5.001277646715499
   0.0
   0.0
   0.0
   0.0
-  0.0</code></pre><h1 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}" href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, multiplier, α, dfmax)</code></pre><p>Coordinate descent for gaussian models</p><p>reference : https://github.com/pbreheny/ncvreg/blob/master/src/gaussian.c</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/4c4f4a4deea7af9996154dd75bdb483dee296f04/src/NonConvexPenalizedRegression.jl#LL119-L125">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}" href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a> — <span class="docstring-category">Method</span></header><section><div><p>crossprod( X, y, n, j)</p><p>Cross product of y with jth column of X</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/4c4f4a4deea7af9996154dd75bdb483dee296f04/src/NonConvexPenalizedRegression.jl#LL101-L105">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}" href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">gaussian_loss( r )</code></pre><p>Gaussian loss </p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/4c4f4a4deea7af9996154dd75bdb483dee296f04/src/NonConvexPenalizedRegression.jl#LL47-L51">source</a></section></article><ul><li><a href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a></li><li><a href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a></li><li><a href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a></li></ul></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Wednesday 21 September 2022 07:57">Wednesday 21 September 2022</span>. Using Julia version 1.8.0.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+  0.0</code></pre><h1 id="Index"><a class="docs-heading-anchor" href="#Index">Index</a><a id="Index-1"></a><a class="docs-heading-anchor-permalink" href="#Index" title="Permalink"></a></h1><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_binomial-NTuple{12, Any}" href="#NonConvexPenalizedRegression.cdfit_binomial-NTuple{12, Any}"><code>NonConvexPenalizedRegression.cdfit_binomial</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Coordinate descent for binomial models</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/binomial.jl#LL27-L29">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}" href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">cdfit_gaussian( X, y, penalty, λ, eps, max_iter, γ, multiplier, α, dfmax)</code></pre><p>Coordinate descent for gaussian models</p><p>reference : https://github.com/pbreheny/ncvreg/blob/master/src/gaussian.c</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/gaussian.jl#LL1-L7">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.cdfit_poisson-NTuple{12, Any}" href="#NonConvexPenalizedRegression.cdfit_poisson-NTuple{12, Any}"><code>NonConvexPenalizedRegression.cdfit_poisson</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Coordinate descent for poisson models</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/poisson.jl#LL1-L3">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}" href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a> — <span class="docstring-category">Method</span></header><section><div><p>crossprod( X, y, n, j)</p><p>Cross product of y with jth column of X</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/NonConvexPenalizedRegression.jl#LL101-L105">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}" href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a> — <span class="docstring-category">Method</span></header><section><div><pre><code class="language-julia hljs">gaussian_loss( r )</code></pre><p>Gaussian loss </p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/NonConvexPenalizedRegression.jl#LL47-L51">source</a></section></article><article class="docstring"><header><a class="docstring-binding" id="NonConvexPenalizedRegression.wcrossprod-NTuple{4, Any}" href="#NonConvexPenalizedRegression.wcrossprod-NTuple{4, Any}"><code>NonConvexPenalizedRegression.wcrossprod</code></a> — <span class="docstring-category">Method</span></header><section><div><p>Weighted cross product of y with jth column of x</p></div><a class="docs-sourcelink" target="_blank" href="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/16a06ca08c64628568bb3d086d975c3c9276ab22/src/binomial.jl#LL11-L13">source</a></section></article><ul><li><a href="#NonConvexPenalizedRegression.cdfit_binomial-NTuple{12, Any}"><code>NonConvexPenalizedRegression.cdfit_binomial</code></a></li><li><a href="#NonConvexPenalizedRegression.cdfit_gaussian-NTuple{10, Any}"><code>NonConvexPenalizedRegression.cdfit_gaussian</code></a></li><li><a href="#NonConvexPenalizedRegression.cdfit_poisson-NTuple{12, Any}"><code>NonConvexPenalizedRegression.cdfit_poisson</code></a></li><li><a href="#NonConvexPenalizedRegression.crossprod-Tuple{Any, Any, Any}"><code>NonConvexPenalizedRegression.crossprod</code></a></li><li><a href="#NonConvexPenalizedRegression.gaussian_loss-Tuple{Vector{Float64}}"><code>NonConvexPenalizedRegression.gaussian_loss</code></a></li><li><a href="#NonConvexPenalizedRegression.wcrossprod-NTuple{4, Any}"><code>NonConvexPenalizedRegression.wcrossprod</code></a></li></ul></article><nav class="docs-footer"><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Tuesday 27 September 2022 09:07">Tuesday 27 September 2022</span>. Using Julia version 1.8.1.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
