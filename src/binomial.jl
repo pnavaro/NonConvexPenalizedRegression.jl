@@ -33,9 +33,9 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
     p = length(X)/n
     L = length(lambda)
     beta0 = zeros(L)
-    beta = zeros(L*p)
+    beta = zeros(L,p)
     Dev = zeros(L)
-    Eta = zeros(L*n)
+    Eta = zeros(L,n)
     iter = zeros(Int, L)
     a = zeros(p)    # Beta from previous iteration
     a0 = 0          # Beta0 from previous iteration
@@ -52,7 +52,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
 
     # Initialization
     ybar = sum(y) / n
-    a0 = b0[0] = log(ybar/(1-ybar))
+    a0 = beta0[0] = log(ybar/(1-ybar))
     nullDev = 0
     for i in eachindex(y) 
         nullDev = nullDev - y[i]*log(ybar) - (1-y[i])*log(1-ybar)
@@ -74,7 +74,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
         lstart = 1
         Dev[0] = nullDev
         for i in eachindex(eta)
-            Eta[i] = eta[i]
+            Eta[:, i] .= eta[i]
         end
     end
 
@@ -83,9 +83,9 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
 
         if l != 0
             # Assign a, a0
-            a0 = b0[l-1]
+            a0 = beta0[l-1]
             for j in eachindex(a)
-                a[j] = b[(l-1)*p+j]
+                a[j] = beta[l-1,j]
             end
 
             # Check dfmax
@@ -166,9 +166,9 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                     # Intercept
                     xwr = crossprod(w, r, 1)
                     xwx = sum(w)
-                    b0[l] = xwr/xwx + a0
+                    beta0[l] = xwr/xwx + a0
                     for i in eachindex(r)
-                      si = b0[l] - a0
+                      si = beta0[l] - a0
                       r[i] -= si
                       eta[i] += si
                     end
@@ -180,8 +180,8 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                       if e1[j]
 
                         # Calculate u, v
-                        xwr = wcrossprod(X, r, w, n, j)
-                        xwx = wsqsum(X, w, n, j)
+                        xwr = wcrossprod(X, r, w, j)
+                        xwx = wsqsum(X, w, j)
                         u = xwr/n + (xwx/n)*a[j]
                         v = xwx/n;
 
@@ -189,20 +189,20 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                         l1 = lam[l] * m[j] * alpha
                         l2 = lam[l] * m[j] * (1-alpha)
                         if penalty == "MCP" 
-                            b[l*p+j] = MCP(u, l1, l2, gamma, v)
+                            beta[l,j] = MCP(u, l1, l2, gamma, v)
                         end
                         if penalty == "SCAD" 
-                            b[l*p+j] = SCAD(u, l1, l2, gamma, v)
+                            beta[l,j] = SCAD(u, l1, l2, gamma, v)
                         end
                         if penalty == "lasso" 
-                            b[l*p+j] = lasso(u, l1, l2, v)
+                            beta[l,j] = lasso(u, l1, l2, v)
                         end
 
                         # Update r
-                        shift = b[l*p+j] - a[j]
+                        shift = beta[l,j] - a[j]
                         if shift !=0
                           for i in eachindex(r)
-                            si = shift*X[j*n+i]
+                            si = shift * X[j,i]
                             r[i] -= si
                             eta[i] += si
                           end
@@ -214,9 +214,9 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                     end
 
                     # Check for convergence
-                    a0 = b0[l]
+                    a0 = beta0[l]
                     for j in eachindex(a)
-                        a[j] = b[l*p+j]
+                        a[j] = beta[l,j]
                     end
                     if maxChange < eps 
                         break
@@ -229,7 +229,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                 if e1[j]==0 && e2[j]==1
                   z[j] = crossprod(X, s, j)/n
                   l1 = lam[l] * m[j] * alpha
-                  if fabs(z[j]) > l1
+                  if abs(z[j]) > l1
                     e1[j] = e2[j] = 1
                     violations +=1
                   end
@@ -252,7 +252,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
             end
             if violations==0
               for i in eachindex(eta)
-                  Eta[n*l+i] = eta[i]
+                  Eta[l,i] = eta[i]
               end
               break
             end
