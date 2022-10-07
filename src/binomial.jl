@@ -79,13 +79,13 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
     end
 
     # Path
-    for l in lstart:L-1
+    for l in lstart:L
 
-        if l != 0
+        if l > 1
             # Assign a, a0
             a0 = beta0[l-1]
             for j in eachindex(a)
-                a[j] = beta[l-1,j]
+                a[j] = beta[j,l]
             end
 
             # Check dfmax
@@ -97,7 +97,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
             end
 
             if (nv > dfmax) || (tot_iter == max_iter)
-              for ll in l:L-1
+              for ll in l:L
                   iter[ll] = missing
               end
               break
@@ -126,6 +126,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
             penalty == "lasso" && ( cutoff = 2*lam[l] - lmax)
             penalty == "MCP" && ( cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lmax))
             penalty == "SCAD" && ( cutoff = lam[l] + gamma/(gamma-2)*(lam[l] - lmax))
+
             for j in eachindex(z)
                 if abs(z[j] > (cutoff * alpha * m[j])) 
                     e2[j] = 1
@@ -137,6 +138,7 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
         while tot_iter < max_iter
             while tot_iter < max_iter
                 while tot_iter < max_iter
+
                     iter[l] += 1
                     tot_iter += 1
                     Dev[l] = 0
@@ -152,11 +154,12 @@ function cdfit_binomial( X, y, penalty, lambda, eps, max_iter, gamma, multiplier
                             Dev[l] = Dev[l] - log(1-p_i)
                         end
                     end
+
                     if Dev[l]/nullDev < .01
                         if warn 
                            @warn "Model saturated; exiting..."
                         end
-                        for ll =l:L-1
+                        for ll =l:L
                             iter[ll] = missing
                         end
                         tot_iter = max_iter
