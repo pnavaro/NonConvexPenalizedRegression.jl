@@ -9,6 +9,7 @@ using Test
     X  = data["Prostate"]["X"]
     y  = data["Prostate"]["y"]
   
+    λ = [0.0]
     mcp = MCP(X, y, λ)
     
     λ = [0.0]
