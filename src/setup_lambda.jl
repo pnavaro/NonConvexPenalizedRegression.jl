@@ -1,34 +1,53 @@
 using GLM
 using InvertedIndices
 
+function maxprod( X, y, v, m)
+
+    n, p  = size(X)
+
+    for j in eachindex(v)
+      zz = crossprod(X, y, v[j]-1) / m[v[j]-1]
+      if abs(zz) > z 
+          z = abs(zz)
+      end
+    end
+
+    return z
+
+end
+
 function setup_lambda(X, y, family, alpha, lambda_min, nlambda, penalty_factor)
 
-  n, p = size(X)
+    f = Dict("gaussian"=>Normal(), "binomial"=>Binomial(), "poisson"=>Poisson())
 
-  ## Determine lambda_max
+    n, p = size(X)
 
-  ind = findall( penalty_factor .!= 0 )
+    ## Determine lambda_max
 
-  if length(ind) != p 
-    fit = lm( X[:, Not(ind)], y, family=family)
-  else 
-    fit <- lm(y~1, family=family)
-  end
+    ind = findall( penalty_factor .!= 0 )
 
-  if (family=="gaussian") {
-    zmax <- .Call("maxprod", X, fit$residuals, ind, penalty.factor) / n
-  } else {
-    zmax <- .Call("maxprod", X, residuals(fit, "working") * fit$weights, ind, penalty.factor) / n
-  }
-  lambda.max <- zmax/alpha
+    if length(ind) != p 
+      fit = lm( X[:, Not(ind)], y, family=f[family])
+    else 
+      fit = lm(ones(n,1), y, family=f[family])
+    end
 
-  if (lambda.min==0) {
-    lambda <- c(exp(seq(log(lambda.max), log(.001*lambda.max), len=nlambda-1)), 0)
-  } else {
-    lambda <- exp(seq(log(lambda.max), log(lambda.min*lambda.max), len=nlambda))
-  }
+    if family == "gaussian"
+        zmax = maxprod( X, fit.residuals, ind, penalty_factor) / n
+    else
+        zmax = maxprod(X, residuals(fit, "working") * fit.weights, ind, penalty_factor) / n
+    end
 
-  if (length(ind)!=p) lambda[1] <- lambda[1] * 1.000001
-  lambda
+    lambda_max = zmax/alpha
+
+    if lambda.min==0
+      lambda = [exp(seq(log(lambda.max), log(.001*lambda.max), len=nlambda-1)); 0]
+    else
+      lambda <- exp(seq(log(lambda.max), log(lambda.min*lambda.max), len=nlambda))
+    end
+
+    if (length(ind)!=p) lambda[1] = lambda[1] * 1.000001
+  
+    return lambda
 
 end
