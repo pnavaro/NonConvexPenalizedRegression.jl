@@ -222,4 +222,3 @@ function cdfit_gaussian(X, y, penalty, λ, eps, max_iter, γ, m, α, dfmax)
     β, loss, iter
 
 end
-

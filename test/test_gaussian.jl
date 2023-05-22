@@ -9,11 +9,11 @@ using Test
     X  = data["Prostate"]["X"]
     y  = data["Prostate"]["y"]
   
-    λ = [0.0]
-    mcp = MCP(X, y, λ)
+    λ = [0.05]
+    @show mcp = MCP(X, y, λ)
     
-    λ = [0.0]
-    scad = SCAD(X, y, λ)
+    λ = [0.05]
+    @show scad = SCAD(X, y, λ)
     
     # @test maximum(abs.(beta .- scad.beta)) < 2e-5
     # 
