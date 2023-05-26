@@ -8,29 +8,14 @@ end
 
 function p_binomial(eta)
     if eta > 10
-        return 1
+        return 1.0
     elseif eta < -10
-        return 0
+        return 0.0
     else
         return exp(eta) / (1 + exp(eta))
     end
 end
 
-"""
-$(SIGNATURES)
-
-Weighted cross product of y with jth column of x
-"""
-function wcrossprod(X, y, w, j)
-    nn = n * j
-    val = 0
-    for i in eachindex(y)
-        val += X[nn+i] * y[i] * w[i]
-    end
-
-    return val
-
-end
 
 fmax2(x, y) = (x < y) ? y : x
 
@@ -39,256 +24,272 @@ $(SIGNATURES)
 
 Coordinate descent for binomial models
 """
-function cdfit_binomial(
-    X,
-    y,
-    penalty,
-    lambda,
-    eps,
-    max_iter,
-    gamma,
-    multiplier,
-    alpha,
-    dfmax,
-    user,
-    warn,
-)
+function cdfit_glm(X, y, family, penalty, lambda, eps, max_iter, gamma, multiplier, alpha, dfmax, user, warn)
 
-    n = length(y)
-    p = length(X) / n
-    L = length(lambda)
-    beta0 = zeros(L)
-    beta = zeros(L, p)
-    Dev = zeros(L)
-    Eta = zeros(L, n)
-    iter = zeros(Int, L)
-    a = zeros(p)    # Beta from previous iteration
-    a0 = 0          # Beta0 from previous iteration
-    lam = lambda
-    tot_iter = 0
-    m = multiplier
-    r = zeros(n)
-    w = zeros(n)
-    s = zeros(n)
-    z = zeros(p)
-    eta = zeros(n)
-    e1 = zeros(Int, p)
-    e2 = zeros(Int, p)
+  # Lengths/dimensions
+  n = length(y)
+  p = length(X)/n
+  L = length(lambda)
 
-    # Initialization
-    ybar = sum(y) / n
-    a0 = beta0[0] = log(ybar / (1 - ybar))
-    nullDev = 0
+  lam = lambda
+  m = multiplier
+  tot_iter = 0
+
+  # Outcome
+  beta0 = zeros(L)
+  b0 = beta0
+  beta = zeros(L,p)
+  b = beta
+  Dev = zeros(L)
+  Eta = zeros(L*n)
+  iter = zeros(Int, L)
+
+  # Intermediate quantities
+  a0 = 0          # Beta0 from previous iteration
+  a = zeros(p)    # Beta from previous iteration
+  r = zeros(n)
+  w = zeros(n)
+  s = zeros(n)
+  z = zeros(p)
+  eta = zeros(n)
+  e1 = zeros(Int, p)
+  e2 = zeros(Int, p)
+
+  # Initialization
+  ybar = sum(y)/n
+  a0 = b0[1] = log(ybar/(1-ybar))
+  nullDev = 0.0
+  if family = "binomial"
+    a0 = b0[1] = log(ybar/(1-ybar))
     for i in eachindex(y)
-        nullDev = nullDev - y[i] * log(ybar) - (1 - y[i]) * log(1 - ybar)
+        nullDev -= 2*y[i]*log(ybar) + 2*(1-y[i])*log(1-ybar)
     end
-    for i in eachindex(s)
-        s[i] = y[i] - ybar
+  elseif family = "poisson"
+    a0 = b0[1] = log(ybar)
+    for i in eachindex(y)
+      if y[i]!=0 
+        nullDev += 2*(y[i]*log(y[i]/ybar) + ybar - y[i])
+      else 
+        nullDev += 2*ybar
     end
-    for i in eachindex(eta)
-        eta[i] = a0
-    end
-    for j in eachindex(z)
-        z[j] = crossprod(X, s, j) / n
-    end
+  end
+  s .= y .- ybar
+  eta .= a0
+  z .= crossprod(X, s, n, j) ./ n
 
-    # If lam[0]=lam_max, skip lam[0] -- closed form sol'n available
-    if user
-        lstart = 0
+  # If lam[0]=lam_max, skip lam[0] -- closed form sol'n available
+  if user
+    lstart = 0
+  else
+    lstart = 1
+    Dev[1] = nullDev
+    Eta .= eta
+  end
+
+  # Path
+  for l in lstart+1:L
+
+    if l != 0
+      # Assign a, a0
+      a0 = b0[l]
+      for j in eachindex(a)
+         a[j] = b[j,l]
+      end
+
+      # Check dfmax
+      nv = 0
+      for j in eachindex(a)
+        if a[j] != 0 
+          nv+=1
+        end
+      if (nv > dfmax) || (tot_iter == max_iter)
+        for ll in l+1:L 
+            iter[ll] = missing
+        end
+        break
+      end
+
+      # Determine eligible set
+      if penalty == "lasso" 
+        cutoff = 2*lam[l] - lam[l-1];
+      end
+      if penalty == "MCP" 
+        cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lam[l-1])
+      end
+      if penalty == "SCAD" 
+        cutoff = lam[l] + gamma/(gamma-2)*(lam[l] - lam[l-1])
+      end
+      for j in eachindex(z)
+         if fabs(z[j]) > (cutoff * alpha * m[j]) 
+           e2[j] = 1
+         end
+      end
     else
-        lstart = 1
-        Dev[0] = nullDev
-        for i in eachindex(eta)
-            Eta[:, i] .= eta[i]
+
+      # Determine eligible set
+      lmax = 0.0
+      for j in eachindex(z)
+         if (fabs(z[j]) > lmax) 
+           lmax = fabs(z[j])
+         end
+      end
+      if penalty == "lasso" 
+        cutoff = 2*lam[l] - lmax
+      end
+      if penalty == "MCP" 
+        cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lmax)
+      end
+      if penalty == "SCAD" 
+        cutoff = lam[l] + gamma/(gamma-2)*(lam[l] - lmax)
+      end
+      for j in eachindex(z)
+        if fabs(z[j]) > (cutoff * alpha * m[j])
+          e2[j] = 1
         end
+      end
+
     end
 
-    # Path
-    for l = lstart:L
-
-        if l > 1
-            # Assign a, a0
-            a0 = beta0[l-1]
-            for j in eachindex(a)
-                a[j] = beta[j, l]
-            end
-
-            # Check dfmax
-            nv = 0
-            for j in eachindex(a)
-                if a[j] != 0
-                    nv += 1
-                end
-            end
-
-            if (nv > dfmax) || (tot_iter == max_iter)
-                for ll = l:L
-                    iter[ll] = missing
-                end
-                break
-            end
-
-            # Determine eligible set
-            penalty == "lasso" && (cutoff = 2 * lam[l] - lam[l-1])
-            penalty == "MCP" &&
-                (cutoff = lam[l] + gamma / (gamma - 1) * (lam[l] - lam[l-1]))
-            penalty == "SCAD" &&
-                (cutoff = lam[l] + gamma / (gamma - 2) * (lam[l] - lam[l-1]))
-
-            for j in eachindex(z)
-                if abs(z[j]) > (cutoff * alpha * m[j])
-                    e2[j] = 1
-                end
-            end
-
-        else
-
-            # Determine eligible set
-            lmax = 0.0
-            for j in eachindex(z)
-                if abs(z[j]) > lmax
-                    lmax = abs(z[j])
-                end
-            end
-            penalty == "lasso" && (cutoff = 2 * lam[l] - lmax)
-            penalty == "MCP" && (cutoff = lam[l] + gamma / (gamma - 1) * (lam[l] - lmax))
-            penalty == "SCAD" && (cutoff = lam[l] + gamma / (gamma - 2) * (lam[l] - lmax))
-
-            for j in eachindex(z)
-                if abs(z[j] > (cutoff * alpha * m[j]))
-                    e2[j] = 1
-                end
-            end
-
-        end
-
+    while tot_iter < max_iter
+      while tot_iter < max_iter 
         while tot_iter < max_iter
-            while tot_iter < max_iter
-                while tot_iter < max_iter
+          iter[l] += 1
+          tot_iter += 1
 
-                    iter[l] += 1
-                    tot_iter += 1
-                    Dev[l] = 0
-                    for i in eachindex(eta)
-                        p_i = p_binomial(eta[i])
-                        w[i] = fmax2(p_i * (1 - p_i), 0.0001)
-                        s[i] = y[i] - p_i
-                        r[i] = s[i] / w[i]
-                        if y[i] == 1
-                            Dev[l] = Dev[l] - log(p_i)
-                        end
-                        if y[i] == 0
-                            Dev[l] = Dev[l] - log(1 - p_i)
-                        end
-                    end
-
-                    if Dev[l] / nullDev < 0.01
-                        if warn
-                            @warn "Model saturated; exiting..."
-                        end
-                        for ll = l:L
-                            iter[ll] = missing
-                        end
-                        tot_iter = max_iter
-                        break
-                    end
-
-                    # Intercept
-                    xwr = crossprod(w, r, 1)
-                    xwx = sum(w)
-                    beta0[l] = xwr / xwx + a0
-                    for i in eachindex(r)
-                        si = beta0[l] - a0
-                        r[i] -= si
-                        eta[i] += si
-                    end
-
-                    maxChange = abs(si) * xwx / n
-
-                    # Covariates
-                    for j in eachindex(a)
-                        if e1[j]
-
-                            # Calculate u, v
-                            xwr = wcrossprod(X, r, w, j)
-                            xwx = wsqsum(X, w, j)
-                            u = xwr / n + (xwx / n) * a[j]
-                            v = xwx / n
-
-                            # Update b_j
-                            l1 = lam[l] * m[j] * alpha
-                            l2 = lam[l] * m[j] * (1 - alpha)
-                            if penalty == "MCP"
-                                beta[l, j] = MCP(u, l1, l2, gamma, v)
-                            end
-                            if penalty == "SCAD"
-                                beta[l, j] = SCAD(u, l1, l2, gamma, v)
-                            end
-                            if penalty == "lasso"
-                                beta[l, j] = lasso(u, l1, l2, v)
-                            end
-
-                            # Update r
-                            shift = beta[l, j] - a[j]
-                            if shift != 0
-                                for i in eachindex(r)
-                                    si = shift * X[j, i]
-                                    r[i] -= si
-                                    eta[i] += si
-                                end
-                                if abs(shift) * sqrt(v) > maxChange
-                                    maxChange = abs(shift) * sqrt(v)
-                                end
-                            end
-                        end
-                    end
-
-                    # Check for convergence
-                    a0 = beta0[l]
-                    for j in eachindex(a)
-                        a[j] = beta[l, j]
-                    end
-                    if maxChange < eps
-                        break
-                    end
-                end
-
-                # Scan for violations in strong set
-                violations = 0
-                for j in eachindex(z)
-                    if e1[j] == 0 && e2[j] == 1
-                        z[j] = crossprod(X, s, j) / n
-                        l1 = lam[l] * m[j] * alpha
-                        if abs(z[j]) > l1
-                            e1[j] = e2[j] = 1
-                            violations += 1
-                        end
-                    end
-                end
-                violations == 0 && break
+          # Approximate L
+          REAL(Dev)[l] = 0;
+          if family == "binomial"
+            v = 0.25
+            for i in eachindex(eta)
+              mu = p_binomial(eta[i])
+              w[i] = fmax2(mu*(1-mu), 0.0001)
+              s[i] = y[i] - mu
+              r[i] = s[i]/w[i]
+              if y[i]==1 
+                Dev[l] = Dev[l] - log(mu)
+              end
+              if y[i]==0 
+                Dev[l] = Dev[l] - log(1-mu)
+              end
             end
+          elseif family == "poisson"
+            for i in eachindex(w)
+              mu = exp(eta[i])
+              w[i] = mu
+              s[i] = y[i] - mu
+              r[i] = s[i]/w[i]
+              if y[i]!=0 
+                Dev[l] += y[i]*log(y[i]/mu)
+              end
+            end
+          end
+          
+          # Check for saturation
+          if (REAL(Dev)[l]/nullDev < .01) 
+            warn && @warning("Model saturated; exiting...")
+            for ll in l+1:L 
+              iter[ll] = missing 
+            end
+            tot_iter = max_iter
+            break
+          end
 
-            # Scan for violations in rest
-            violations = 0
-            for j in eachindex(z)
-                if e2[j] == 0
-                    z[j] = crossprod(X, s, j) / n
-                    l1 = lam[l] * m[j] * alpha
-                    if abs(z[j]) > l1
-                        e1[j] = e2[j] = 1
-                        violations += 1
-                    end
+          # Intercept
+          xwr = crossprod(w, r, 0)
+          xwx = sum(w, n);
+          b0[l] = xwr/xwx + a0;
+          for i in eachindex(r)
+            si = b0[l] - a0
+            r[i] -= si
+            eta[i] += si
+          end
+          max_change = fabs(si)*xwx/n
+
+          # Covariates
+          for j in eachindex(e1)
+
+            if e1[j]
+
+              # Calculate u, v
+              xwr = wcrossprod(X, r, w, j)
+              xwx = wsqsum(X, w, j)
+              u = xwr/n + (xwx/n)*a[j]
+              v = xwx/n
+
+              # Update b_j
+              l1 = lam[l] * m[j] * alpha;
+              l2 = lam[l] * m[j] * (1-alpha);
+              if penalty == "MCP"
+                b[l*p+j] = MCP(u, l1, l2, gamma, v) 
+              end
+              if penalty == "SCAD"
+                b[l*p+j] = SCAD(u, l1, l2, gamma, v) 
+              end
+              if penalty == "lasso"
+                b[l*p+j] = lasso(u, l1, l2, v) 
+              end
+
+              # Update r
+              shift = b[l*p+j] - a[j];
+              if shift !=0
+                for i in eachindex(r)
+                  si = shift*X[j*n+i]
+                  r[i] -= si
+                  eta[i] += si
                 end
-            end
-            if violations == 0
-                for i in eachindex(eta)
-                    Eta[l, i] = eta[i]
+                if fabs(shift)*sqrt(v) > max_change
+                  max_change = fabs(shift)*sqrt(v)
                 end
-                break
+              end
             end
+          end
+
+          # Check for convergence
+          a0 = b0[l]
+          for j in eachindex(a)
+             a[j] = b[j, l]
+          end
+          if max_change < eps 
+            break
+          end
         end
-    end
 
-    return res
+        # Scan for violations in strong set
+        int violations = 0;
+        for j in eachindex(z)
+          if e1[j]==0 && e2[j]==1
+            z[j] = crossprod(X, s, j)/n
+            l1 = lam[l] * m[j] * alpha
+            if fabs(z[j]) > l1
+              e1[j] = e2[j] = 1
+              violations += 1
+            end
+          end
+        end
+        if (violations==0) break; end
+      end
+
+      # Scan for violations in rest
+      violations = 0
+      for j in eachindex(z)
+        if e2[j]==0 
+          z[j] = crossprod(X, s, n, j)/n
+          l1 = lam[l] * m[j] * alpha
+          if fabs(z[j]) > l1
+            e1[j] = e2[j] = 1
+            violations += 1
+          end
+        end
+      end
+      if violations==0
+        for i in eachindex(eta)
+          Eta[i, l] = eta[i]
+        end
+        break
+      end
+    end
+  end
+
+  return beta0, beta, Dev, Eta, iter
 
 end
