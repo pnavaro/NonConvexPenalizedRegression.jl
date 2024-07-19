@@ -37,21 +37,21 @@ $(SIGNATURES)
 Weighted sum of squares of jth column of X
 """
 function wsqsum(X, w, j)
-   val=0
-   for i in eachindex(w) 
-      val += w[i] * X[i, j]^2
-   end
-   val
+    val = 0
+    for i in eachindex(w)
+        val += w[i] * X[i, j]^2
+    end
+    val
 end
 
 """
 $(SIGNATURES)
 Sum of squares of jth column of X
 """
-sqsum(X, j) = sum( view(X, :, j).^2 )
+sqsum(X, j) = sum(view(X, :, j) .^ 2)
 
 """
 $(SIGNATURES)
 Gaussian loss
 """
-g_loss(r) = sum( r.^2 )
+g_loss(r) = sum(r .^ 2)

@@ -30,9 +30,8 @@ function standardize(X)
 
     any(s .< 1e-6) && throw("Sigular matrix")
 
-    ns = findall( s .> 1e-6)
+    ns = findall(s .> 1e-6)
 
-    copy(XX[:,ns]), c, s
+    copy(XX[:, ns]), c, s
 
 end
-

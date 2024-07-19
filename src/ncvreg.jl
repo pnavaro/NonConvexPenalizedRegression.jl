@@ -32,4 +32,3 @@ function ncvreg(X, y, λ, penalty, γ)
     beta
 
 end
-

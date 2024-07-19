@@ -27,4 +27,3 @@ struct SCAD <: AbstractModel
     SCAD(X, y, λ) = new(ncvreg(X, y, λ, :SCAD, 3.7), λ)
 
 end
-

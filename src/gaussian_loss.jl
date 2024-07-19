@@ -10,4 +10,3 @@ function gaussian_loss(r::Vector{Float64})::Float64
     end
     l
 end
-

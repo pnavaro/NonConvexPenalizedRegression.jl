@@ -18,4 +18,3 @@ struct Lasso <: AbstractModel
     Lasso(X, y, λ) = new(ncvreg(X, y, λ, :Lasso, 3.0), λ)
 
 end
-

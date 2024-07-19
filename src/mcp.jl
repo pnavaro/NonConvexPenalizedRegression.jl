@@ -22,4 +22,3 @@ struct MCP <: AbstractModel
     MCP(X, y, λ) = new(ncvreg(X, y, λ, :MCP, 3.0), λ)
 
 end
-
