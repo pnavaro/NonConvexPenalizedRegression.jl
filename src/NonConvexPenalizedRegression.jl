@@ -12,7 +12,7 @@ module NonConvexPenalizedRegression
     include("mcp.jl")
     include("lasso.jl")
     include("gaussian.jl")
-    include("binomial.jl")
+    # include("binomial.jl")
     include("poisson.jl")
     include("ncvreg.jl")
 
