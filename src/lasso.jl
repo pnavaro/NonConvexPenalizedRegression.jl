@@ -15,7 +15,9 @@ struct Lasso <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    Lasso(X, y, λ) = new(ncvreg(X, y, λ, :Lasso, 3.0), λ)
+    function Lasso(X, y, λ; kwargs...)
+        fit = ncvreg(X, y; lambda=λ, penalty=:Lasso, kwargs...)
+        return new(fit.beta, fit.lambda)
+    end
 
 end
-

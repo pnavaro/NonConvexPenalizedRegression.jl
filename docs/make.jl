@@ -1,3 +1,5 @@
+ENV["GKSwstype"] = "100"
+
 using Documenter, NonConvexPenalizedRegression
 
 makedocs(;
@@ -5,6 +7,7 @@ makedocs(;
     format=Documenter.HTML(),
     pages=[
         "Home" => "index.md",
+        "Getting started" => "getting_started.md",
     ],
     repo="https://github.com/pnavaro/NonConvexPenalizedRegression.jl/blob/{commit}{path}#L{line}",
     sitename="NonConvexPenalizedRegression.jl",
