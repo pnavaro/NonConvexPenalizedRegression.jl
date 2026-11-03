@@ -6,7 +6,54 @@
 
 Regularization Paths for SCAD and MCP Penalized Regression Models
 
-This is a quick, naive and partial Julia translation of the R package [ncvreg](http://pbreheny.github.io/ncvreg/).  Only `gaussian` family is translated but if you need more, just ask, i can do it if it is useful for someone.
+This is a quick, naive and partial Julia translation of the R package [ncvreg](http://pbreheny.github.io/ncvreg/). The keyword-based `ncvreg` interface supports Gaussian, binomial, and Poisson families; binomial responses use 0/1 coding and Poisson responses use nonnegative integer counts.
+
+For a fitted path, `coef`, `fitted`, `predict`, `residuals`, `deviance`,
+`loglikelihood`, and `summary` provide model methods and diagnostics.
+`residuals` accepts `type=:response`, `:pearson`, or `:deviance`. RecipesBase
+recipes provide coefficient-path, deviance-path, and residual-versus-fitted
+plots when used with Plots.jl:
+
+```julia
+using Plots
+
+fit = ncvreg(X, y; family=BinomialFamily(), penalty=:SCAD)
+plot(fit)
+plot(devianceplot(fit))
+plot(residualplot(fit, X, y))
+```
+
+Plots.jl is not a dependency; install it separately to render these recipes.
+
+Lambda paths and fitting controls can be configured through keywords:
+
+```julia
+fit = ncvreg(X, y;
+    family=GaussianFamily(),
+    penalty=:MCP,
+    gamma=3.0,
+    alpha=0.8,
+    penalty_factor=ones(size(X, 2)), # set a factor to zero to leave it unpenalized
+    nlambda=100,
+    lambda_min_ratio=0.001,         # set to zero to append lambda=0
+    eps=1e-6,
+    max_iter=10000,                 # total sweeps across the entire path
+    dfmax=size(X, 2),               # maximum nonzero slopes before path stopping
+    warn=true,
+    convex=true,
+    return_X=true,
+)
+
+summary(fit)
+residuals(fit)                      # uses data retained by return_X=true
+```
+
+Supply `lambda=0.1` or `lambda=[1.0, 0.1, 0.0]` to bypass automatic setup.
+The default minimum ratio is 0.001 for `n > p`, and 0.05 otherwise. Pure ridge
+(`alpha=0`) requires explicit lambda values. Fits stopped by iteration limits,
+model size, or saturation retain only attempted lambdas; inspect `fit.iter`,
+`fit.status`, and `fit.stop_reason`. Legacy `SCAD`, `MCP`, and `Lasso`
+constructors also accept fitting keywords.
 
 Algorithm is described in **Breheny P and Huang J (2011)** "Coordinate descent algorithms for nonconvex penalized regression, with applications to biological feature selection". *Annals of Applied Statistics*, 5: 232–253
 
