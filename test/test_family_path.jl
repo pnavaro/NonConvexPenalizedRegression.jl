@@ -52,4 +52,5 @@ using Random
     )
     @test_throws ArgumentError ncvreg(
         X, fill(-1.0, size(X, 1)); family=PoissonFamily()
+    )
 end
