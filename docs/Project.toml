@@ -10,3 +10,6 @@ NonConvexPenalizedRegression = {path = ".."}
 
 [compat]
 Documenter = "1.19.0"
+Plots = "1.41.7"
+Statistics = "<0.0.1, 1"
+RData = "1.1.0"
