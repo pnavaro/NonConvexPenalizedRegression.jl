@@ -1,19 +1,31 @@
 """
 Coordinate descent for poisson models
 """
-function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma, 
-        multiplier, alpha, dfmax, user, warn)
+function cdfit_poisson(
+    X,
+    y,
+    penalty,
+    lambda,
+    eps,
+    max_iter,
+    gamma,
+    multiplier,
+    alpha,
+    dfmax,
+    user,
+    warn,
+)
 
     # Declarations
     n = length(y)
-    p = length(X)/n
+    p = length(X) / n
     L = length(lambda)
     beta0 = zeros(L)
     b0 = beta0
-    beta = zeros(L*p)
+    beta = zeros(L * p)
     b = beta
     Dev = zeros(L)
-    Eta = zeros(L*n)
+    Eta = zeros(L * n)
     iter = zeros(Int, L)
     a = zeros(p)    # Beta from previous iteration
     a0 = 0                    # Beta0 from previous iteration
@@ -29,22 +41,22 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
     e2 = zeros(Int, p)
 
     # Initialization
-    ybar = sum(y)/n
+    ybar = sum(y) / n
     a0 = b0[0] = log(ybar)
     nullDev = 0
     for i in eachindex(y)
         if y[i] != 0
-            nullDev += y[i]*log(y[i]/ybar) 
-        end 
+            nullDev += y[i] * log(y[i] / ybar)
+        end
     end
     for i in eachindex(s)
-        s[i] = y[i] - ybar 
+        s[i] = y[i] - ybar
     end
     for i in eachindex(eta)
-        eta[i] = a0 
+        eta[i] = a0
     end
     for j in eachindex(z)
-        z[j] = crossprod(X, s, j)/n 
+        z[j] = crossprod(X, s, j) / n
     end
 
     # If lam[0]=lam_max, skip lam[0] -- closed form sol'n available
@@ -54,80 +66,80 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
         lstart = 1
         Dev[0] = nullDev
         for i in eachindex(eta)
-            Eta[i] = eta[i] 
+            Eta[i] = eta[i]
         end
     end
 
     # Path
-    for l=lstart:L-1
+    for l = lstart:L-1
         if l != 0
             # Assign a, a0
             a0 = b0[l-1]
             for j in eachindex(a)
-                a[j] = b[(l-1)*p+j] 
+                a[j] = b[(l-1)*p+j]
             end
 
             # Check dfmax
             nv = 0
             for j in eachindex(a)
-                if a[j] != 0 
-                    nv += 1 
+                if a[j] != 0
+                    nv += 1
                 end
             end
             if (nv > dfmax) | (tot_iter == max_iter)
-              for ll = l:L-1
-                  iter[ll] = missing 
-              end
-              break
+                for ll = l:L-1
+                    iter[ll] = missing
+                end
+                break
             end
 
             # Determine eligible set
-            if penalty == "lasso" 
-                cutoff = 2*lam[l] - lam[l-1] 
+            if penalty == "lasso"
+                cutoff = 2 * lam[l] - lam[l-1]
             end
 
             if penalty == "MCP"
-                cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lam[l-1]) 
+                cutoff = lam[l] + gamma / (gamma - 1) * (lam[l] - lam[l-1])
             end
 
-            if penalty == "SCAD" 
-                cutoff = lam[l] + gamma/(gamma-2)*(lam[l] - lam[l-1]) 
+            if penalty == "SCAD"
+                cutoff = lam[l] + gamma / (gamma - 2) * (lam[l] - lam[l-1])
             end
 
             for j in eachindex(z)
                 if abs(z[j]) > (cutoff * alpha * m[j])
-                    e2[j] = 1 
-                end 
+                    e2[j] = 1
+                end
             end
 
-        else 
+        else
 
             # Determine eligible set
             lmax = 0
             for j in eachindex(z)
                 if abs(z[j]) > lmax
                     lmax = abs(z[j])
-                end 
+                end
             end
             if penalty == "lasso"
-                cutoff = 2*lam[l] - lmax 
+                cutoff = 2 * lam[l] - lmax
             end
             if penalty == "MCP"
-                cutoff = lam[l] + gamma/(gamma-1)*(lam[l] - lmax) 
+                cutoff = lam[l] + gamma / (gamma - 1) * (lam[l] - lmax)
             end
             if penalty == "SCAD"
-                cutoff = lam[l] + gamma/(gamma-2)*(lam[l] - lmax) 
+                cutoff = lam[l] + gamma / (gamma - 2) * (lam[l] - lmax)
             end
             for j in eachindex(z)
                 if abs(z[j]) > (cutoff * alpha * m[j])
-                    e2[j] = 1 
-                end 
+                    e2[j] = 1
+                end
             end
         end
 
-        while tot_iter < max_iter 
+        while tot_iter < max_iter
             while tot_iter < max_iter
-                while tot_iter < max_iter 
+                while tot_iter < max_iter
 
                     iter[l] += 1
                     tot_iter += 1
@@ -137,16 +149,16 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                         mu = exp(eta[i])
                         w[i] = mu
                         s[i] = y[i] - mu
-                        r[i] = s[i]/w[i]
-                        if y[i]!=0
-                            Dev[l] += y[i]*log(y[i]/mu)
+                        r[i] = s[i] / w[i]
+                        if y[i] != 0
+                            Dev[l] += y[i] * log(y[i] / mu)
                         end
                     end
-                    if Dev[l]/nullDev < .01
+                    if Dev[l] / nullDev < 0.01
                         if warn
                             @warn "Model saturated exiting..."
                         end
-                        for ll=l:L-1
+                        for ll = l:L-1
                             iter[ll] = missing
                         end
                         tot_iter = max_iter
@@ -156,7 +168,7 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                     # Intercept
                     xwr = crossprod(w, r, 0)
                     xwx = sum(w)
-                    b0[l] = xwr/xwx + a0
+                    b0[l] = xwr / xwx + a0
                     for i in eachindex(r)
                         si = b0[l] - a0
                         r[i] -= si
@@ -171,32 +183,32 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                             # Calculate u, v
                             xwr = wcrossprod(X, r, w, j)
                             xwx = wsqsum(X, w, j)
-                            u = xwr/n + (xwx/n)*a[j]
-                            v = xwx/n
+                            u = xwr / n + (xwx / n) * a[j]
+                            v = xwx / n
 
                             # Update b_j
                             l1 = lam[l] * m[j] * alpha
-                            l2 = lam[l] * m[j] * (1-alpha)
-                            if penalty == "MCP" 
-                                b[l*p+j] = MCP(u, l1, l2, gamma, v) 
+                            l2 = lam[l] * m[j] * (1 - alpha)
+                            if penalty == "MCP"
+                                b[l*p+j] = MCP(u, l1, l2, gamma, v)
                             end
-                            if penalty == "SCAD" 
-                                b[l*p+j] = SCAD(u, l1, l2, gamma, v) 
+                            if penalty == "SCAD"
+                                b[l*p+j] = SCAD(u, l1, l2, gamma, v)
                             end
-                            if penalty == "lasso" 
+                            if penalty == "lasso"
                                 b[l*p+j] = lasso(u, l1, l2, v)
                             end
 
                             # Update r
                             shift = b[l*p+j] - a[j]
-                            if shift !=0
+                            if shift != 0
                                 for i in eachindex(eta)
-                                    si = shift*X[j*n+i]
+                                    si = shift * X[j*n+i]
                                     r[i] -= si
                                     eta[i] += si
                                 end
-                                if abs(shift)*sqrt(v) > maxChange
-                                    maxChange = abs(shift)*sqrt(v)
+                                if abs(shift) * sqrt(v) > maxChange
+                                    maxChange = abs(shift) * sqrt(v)
                                 end
                             end
                         end
@@ -207,7 +219,7 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                     for j in eachindex(a)
                         a[j] = b[l*p+j]
                     end
-                    if maxChange < eps 
+                    if maxChange < eps
                         break
                     end
                 end
@@ -215,8 +227,8 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                 # Scan for violations in strong set
                 violations = 0
                 for j in eachindex(z)
-                    if e1[j]==0 && e2[j]==1
-                        z[j] = crossprod(X, s, j)/n
+                    if e1[j] == 0 && e2[j] == 1
+                        z[j] = crossprod(X, s, j) / n
                         l1 = lam[l] * m[j] * alpha
                         if abs(z[j]) > l1
                             e1[j] = 1
@@ -225,8 +237,8 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                         end
                     end
                 end
-                if violations==0
-                    break 
+                if violations == 0
+                    break
                 end
             end
 
@@ -234,7 +246,7 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
             violations = 0
             for j in eachindex(z)
                 if e2[j] == 0
-                    z[j] = crossprod(X, s, j)/n
+                    z[j] = crossprod(X, s, j) / n
                     l1 = lam[l] * m[j] * alpha
                     if abs(z[j]) > l1
                         e1[j] = 1
@@ -243,7 +255,7 @@ function cdfit_poisson( X, y, penalty, lambda, eps, max_iter, gamma,
                     end
                 end
             end
-            if violations==0
+            if violations == 0
                 for i in eachindex(eta)
                     Eta[n*l+i] = eta[i]
                 end
