@@ -24,7 +24,9 @@ struct SCAD <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    SCAD(X, y, λ) = new(ncvreg(X, y, λ, :SCAD, 3.7), λ)
+    function SCAD(X, y, λ; gamma=3.7, kwargs...)
+        fit = ncvreg(X, y; lambda=λ, penalty=:SCAD, gamma, kwargs...)
+        return new(fit.beta, fit.lambda)
+    end
 
 end
-

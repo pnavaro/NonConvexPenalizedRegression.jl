@@ -1,7 +1,10 @@
 module NonConvexPenalizedRegression
 
+    using LinearAlgebra
     using Statistics
     using DocStringExtensions
+    import RecipesBase
+    import Base: summary
     
     ncol(A::AbstractMatrix) = size(A)[2]
     
@@ -12,8 +15,11 @@ module NonConvexPenalizedRegression
     include("mcp.jl")
     include("lasso.jl")
     include("gaussian.jl")
-    # include("binomial.jl")
-    include("poisson.jl")
+    include("families.jl")
+    include("setup_lambda.jl")
+    include("family_path.jl")
+    include("model_methods.jl")
+    include("recipes.jl")
     include("ncvreg.jl")
 
 end
