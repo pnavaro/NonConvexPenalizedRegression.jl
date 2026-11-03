@@ -1,7 +1,7 @@
 name = "NonConvexPenalizedRegression"
 uuid = "393d5197-c0a3-4293-bd2f-5829bf091ab1"
 authors = ["Pierre Navaro"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 DocStringExtensions = "ffbed154-4ef7-542d-bbb7-c09d3a79fcae"
