@@ -19,7 +19,9 @@ struct MCP <: AbstractModel
     beta::Array{Float64,2}
     λ::Vector{Float64}
 
-    MCP(X, y, λ) = new(ncvreg(X, y, λ, :MCP, 3.0), λ)
+    function MCP(X, y, λ; gamma=3.0, kwargs...)
+        fit = ncvreg(X, y; lambda=λ, penalty=:MCP, gamma, kwargs...)
+        return new(fit.beta, fit.lambda)
+    end
 
 end
-
