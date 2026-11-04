@@ -6,6 +6,9 @@
 
 Regularization Paths for SCAD and MCP Penalized Regression Models
 
+Requires Julia 1.10 or later. CI tests the minimum supported Julia release
+and the latest stable release.
+
 This is a quick, naive and partial Julia translation of the R package [ncvreg](http://pbreheny.github.io/ncvreg/). The keyword-based `ncvreg` interface supports Gaussian, binomial, and Poisson families; binomial responses use 0/1 coding and Poisson responses use nonnegative integer counts.
 
 For a fitted path, `coef`, `fitted`, `predict`, `residuals`, `deviance`,
