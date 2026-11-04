@@ -7,6 +7,8 @@ using the same Prostate dataset, but only features currently available in Julia.
 
 ## Installation
 
+Use Julia 1.10 or later.
+
 In a Julia environment, install the package from its repository and add the
 packages used below:
 
